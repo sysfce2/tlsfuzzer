@@ -92,6 +92,7 @@ def help_msg():
     print(" --verbose-analysis Enable verbose progress of analysis.")
     print(" --status-delay num How often to print the status line. Default: 2.0 seconds")
     print(" --status-newline Use a newline for line end instead of carriage return.")
+    print(" --summary-only Print summary result only, don't print pairwise results")
     print(" --no-alert     Don't expect the server to send an alert before closing connection.")
     print(" --help         this message")
 
@@ -152,6 +153,7 @@ def main():
     delay = None
     carriage_return = None
     no_alert = False
+    summary_only = False
 
     argv = sys.argv[1:]
     opts, args = getopt.getopt(argv,
@@ -169,6 +171,7 @@ def main():
                                 "verbose-analysis",
                                 "status-delay=",
                                 "status-newline",
+                                "summary-only",
                                 "no-alert"])
     for opt, arg in opts:
         if opt == '-h':
@@ -233,6 +236,8 @@ def main():
             verbose_analysis = True
         elif opt == "--status-delay":
             delay = float(arg)
+        elif opt == "--summary-only":
+            summary_only = True
         elif opt == "--status-newline":
             carriage_return = '\n'
         elif opt == "--no-alert":
@@ -1036,7 +1041,8 @@ place where the timing leak happens:
                                          no_quickack=no_quickack,
                                          verbose_analysis=verbose_analysis,
                                          delay=delay,
-                                         carriage_return=carriage_return)
+                                         carriage_return=carriage_return,
+                                         summary_only=summary_only)
             print("Pre-generating pre-master secret values...")
 
             with open(
