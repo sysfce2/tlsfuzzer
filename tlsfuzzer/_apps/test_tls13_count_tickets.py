@@ -19,16 +19,18 @@ from tlsfuzzer.expect import ExpectServerHello, ExpectCertificate, \
         ExpectNewSessionTicket
 
 from tlslite.constants import CipherSuite, AlertLevel, AlertDescription, \
-        TLS_1_3_DRAFT, GroupName, ExtensionType, SignatureScheme
+        TLS_1_3_DRAFT, GroupName, ExtensionType, SignatureScheme, \
+        PskKeyExchangeMode
 from tlslite.keyexchange import ECDHKeyExchange
 from tlsfuzzer.utils.lists import natural_sort_keys
 from tlslite.extensions import KeyShareEntry, ClientKeyShareExtension, \
         SupportedVersionsExtension, SupportedGroupsExtension, \
-        SignatureAlgorithmsExtension, SignatureAlgorithmsCertExtension
+        SignatureAlgorithmsExtension, SignatureAlgorithmsCertExtension, \
+        PskKeyExchangeModesExtension
 from tlsfuzzer.helpers import key_share_gen, RSA_SIG_ALL
 
 
-version = 5
+version = 6
 
 
 def help_msg():
@@ -114,6 +116,8 @@ def main():
         .create(sig_algs)
     ext[ExtensionType.signature_algorithms_cert] = SignatureAlgorithmsCertExtension()\
         .create(RSA_SIG_ALL)
+    ext[ExtensionType.psk_key_exchange_modes] = PskKeyExchangeModesExtension()\
+        .create([PskKeyExchangeMode.psk_dhe_ke])
     node = node.add_child(ClientHelloGenerator(ciphers, extensions=ext))
     node = node.add_child(ExpectServerHello())
     node = node.add_child(ExpectChangeCipherSpec())
@@ -160,6 +164,8 @@ def main():
         .create(sig_algs)
     ext[ExtensionType.signature_algorithms_cert] = SignatureAlgorithmsCertExtension()\
         .create(RSA_SIG_ALL)
+    ext[ExtensionType.psk_key_exchange_modes] = PskKeyExchangeModesExtension()\
+        .create([PskKeyExchangeMode.psk_dhe_ke])
     node = node.add_child(ClientHelloGenerator(ciphers, extensions=ext))
     node = node.add_child(ExpectServerHello())
     node = node.add_child(ExpectChangeCipherSpec())
